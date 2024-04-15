@@ -1,3 +1,4 @@
+import mysql.connector
 import tkinter as tk
 import pandas as pd  # Importar Pandas (opcional)
 
@@ -52,7 +53,35 @@ def guardar_datos_csv():
         df.to_csv("datos_salarios.csv", index=False)
     else:
         print("Se requiere la librería Pandas para guardar datos en CSV. Instale Pandas para usar esta función.")
+ 
+# Función para eliminar un trabajador
+def eliminar_trabajador():
+    # Obtener el índice del trabajador seleccionado en la lista
+    indice_trabajador_seleccionado = lista_trabajadores.curselection()
 
+    # Verificar si hay un trabajador seleccionado
+    if not indice_trabajador_seleccionado:
+        print("No hay ningún trabajador seleccionado para eliminar.")
+        return
+
+    # Obtener el índice del trabajador seleccionado
+    indice_trabajador = indice_trabajador_seleccionado[0]
+
+    # Eliminar el trabajador de la lista de datos
+    del datos[indice_trabajador]
+
+    # Actualizar la lista de trabajadores mostrada
+    actualizar_lista_trabajadores()
+
+# Función para actualizar la lista de trabajadores mostrada
+def actualizar_lista_trabajadores():
+    # Borrar la lista actual
+    lista_trabajadores.delete(0, tk.END)
+
+    # Agregar cada trabajador a la lista
+    for indice, trabajador in enumerate(datos):
+        lista_trabajadores.insert(tk.END, f"{indice+1}. {trabajador['Nombre']}: {trabajador['Puesto de trabajo']}, ${trabajador['Salario']:.2f}") 
+  
 # Crear etiquetas y cuadros de texto
 etiqueta_nombre = tk.Label(ventana, text="Nombre:")
 etiqueta_nombre.grid(row=0, column=0, padx=5, pady=5)
@@ -79,6 +108,10 @@ boton_agregar_trabajador.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
 # Crear lista para mostrar trabajadores
 lista_trabajadores = tk.Listbox(ventana, width=30, height=10)
 lista_trabajadores.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
+
+# Crear botón para eliminar trabajador
+boton_eliminar_trabajador = tk.Button(ventana, text="Eliminar Trabajador", command=eliminar_trabajador)
+boton_eliminar_trabajador.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
 
 # Crear botón para guardar datos en CSV
 boton_guardar_csv = tk.Button(ventana, text="Guardar en CSV", command=guardar_datos_csv)
